@@ -26,24 +26,25 @@ def cadastro(request):
         return redirect('cadastro')
 
 
-def login(request):
+def login_view(request):
     if request.method == 'GET':
         if request.user.is_authenticated:
             return redirect('/divulgar/novo_pet/')
         else:
             return render(request, "login.html")
     
-    if request.method == 'POST':
-        name, senha = request.POST.get('name'), request.POST.get('senha')
-        user = authenticate(username = name, password = senha)
+    elif request.method == "POST":
+        username = request.POST.get('nome')
+        password = request.POST.get('senha')
+        user = authenticate(username=username, password=password)
         if user:
-            login(user)
+            login(request, user)
             return redirect('/divulgar/novo_pet')
         else:
-            messages.add_message(request, messages.constants.ERROR, 'Usuário não encontrado! Verifique nome de usuário e senha')
-            return redirect('login')
+            messages.add_message(request, messages.constants.ERROR, 'Usuário ou senha inválidos')
+            return render(request, 'login.html')
 
-def logout(request):
+def logout_view(request):
     logout(request)
     return redirect('login')
         
